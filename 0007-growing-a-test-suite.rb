@@ -92,3 +92,26 @@ end
 #types of event dictate different behaviour - shoes and cheeses can return 
 #these different events so that composing objects in a different way achieves 
 #different results in the system.
+#
+#Also notice I've introduced a Demeter violation - gift.when_digested.energy.
+#I could deal with this in one of two ways - either allow events to be added 
+#to Fixnums using Ruby magic, or apply tell don't ask further with something like:
+#
+def receive_gift!(gift)
+  gift.be_digested_by(self)
+end
+
+class Shoe
+  def be_digested_by(eater)
+    #no op
+  end
+end
+
+class Cheese
+  def be_digested_by(eater)
+    eater.receive_energy(100)
+  end
+end
+
+#But this is getting into very abstract territory and making me scream out for 
+#multimethods, so I've probably made a misstep somewhere.
