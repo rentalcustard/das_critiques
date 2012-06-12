@@ -9,7 +9,10 @@ class Walrus
     # XXX Tell Don't Ask
     # We ask the gift if it's edible, and then we tell it to (be) digested.
     # This smells to me. I don't like the idea of calling a query method as 
-    # a guard around a command because of Tell Don't Ask.
+    # a guard around a command because if it's not edible, it should behave
+    # in a different way when digested, rather than forcing all its
+    # collaborators to check its edible? query method before calling its
+    # digest method.
     if gift.edible?
       @energy += gift.digest.energy
     end
