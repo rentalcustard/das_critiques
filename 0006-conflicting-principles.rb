@@ -42,22 +42,17 @@ end
 
 class User
   def account_standing_policy
-    AccountStandingPolicy.create(self, :cards_invalid => all_cards_invalid?,
-                                       :has_coupon  => has_coupon?)
+    if all_cards_invalid?
+      InvalidCardPolicy.new(self)
+    elsif have_coupon?
+      WithCouponPolicy.new(self)
+    else
+      ValidSubscriptionPolicy.new(self)
+    end
   end
 end
 
 class AccountStandingPolicy
-  def create(user, opts)
-    if opts[cards_invalid]
-      InvalidCardPolicy.new(user)
-    elsif opts[has_coupon]
-      WithCouponPolicy.new(user)
-    else
-      ValidSubscriptionPolicy.new(user)
-    end
-  end
-
   def send_disable_notification!
     # ...
   end
