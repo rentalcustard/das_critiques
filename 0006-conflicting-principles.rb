@@ -36,42 +36,48 @@ end
 class SessionsController
   def create
     user = log_user_in
-    user.account_standing_policy.enforce!
+    user.enforce_account_standing_policy
   end
 end
 
 class User
-  def account_standing_policy
-    if all_cards_invalid?
-      InvalidCardPolicy.new(self)
+  def enforce_account_standing_policy
+    state.enforce_account_standing
+  end
+
+  private
+  def state
+    @state ||= if all_cards_invalid?
+      InvalidCardState.new(self)
     elsif have_coupon?
-      WithCouponPolicy.new(self)
+      WithCouponState.new(self)
     else
-      ValidSubscriptionPolicy.new(self)
+      ValidSubscriptionState.new(self)
     end
   end
 end
 
-class AccountStandingPolicy
-  def send_disable_notification!
+class AccountStandingState
+  def send_disable_notification
     # ...
   end
 
-  def enforce!
+  def enforce_account_standing
     #success by default
   end
 end
 
-class InvalidCardPolicy < AccountStandingPolicy
+class InvalidCardState < AccountStandingState
   def initialize(user)
     @user = user
   end
 
-  def enforce!
+  def enforce_account_standing
     @user.disable!
+    send_disable_notification
   end
 end
 
 #default implementations fine for these for now
-class WithCouponPolicy < AccountStandingPolicy; end
-class ValidSubscriptionPolicy < AccountStandingPolicy; end
+class WithCouponState < AccountStandingState; end
+class ValidSubscriptionState < AccountStandingState; end
