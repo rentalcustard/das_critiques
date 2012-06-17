@@ -45,4 +45,7 @@ end
 
 # and this would work without further modification since spies don't fail fast.
 #
+# Update: it seems that making double/stub as_null_object by default is mooted
+# for RSpec 3: https://github.com/rspec/rspec-mocks/issues/56
+#
 # [1] https://github.com/mortice/matahari
