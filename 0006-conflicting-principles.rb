@@ -48,11 +48,11 @@ class User
   private
   def state
     @state ||= if all_cards_invalid?
-      InvalidCardState.new(self)
+      UserWithInvalidCard.new(self)
     elsif have_coupon?
-      WithCouponState.new(self)
+      UserWithCoupon.new(self)
     else
-      ValidSubscriptionState.new(self)
+      UserWithValidSubscription.new(self)
     end
   end
 end
@@ -67,7 +67,7 @@ class AccountStandingState
   end
 end
 
-class InvalidCardState < AccountStandingState
+class UserWithInvalidCard < AccountStandingState
   def initialize(user)
     @user = user
   end
@@ -79,5 +79,5 @@ class InvalidCardState < AccountStandingState
 end
 
 #default implementations fine for these for now
-class WithCouponState < AccountStandingState; end
-class ValidSubscriptionState < AccountStandingState; end
+class UserWithCoupon < AccountStandingState; end
+class UserWithValidSubscription < AccountStandingState; end
